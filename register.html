@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link rel="stylesheet" href="/css/register.css">
+
+    
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Register</h2>
+
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="post" action="/register">
+        <input type="text" name="username" placeholder="Username" required>
+
+        <input type="password" name="password" placeholder="Password" required>
+
+        <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+
+        <input type="text" name="name" placeholder="First Name" required>
+
+        <input type="text" name="lastname" placeholder="Last Name" required>
+
+        <button type="submit">Register</button>
+    </form>
+</div>
+<script>
+    let score = 0;
+    let missed = 0;
+    const scoreEl = document.getElementById('score');
+    const missedEl = document.getElementById('missed');
+
+    function spawnBall() {
+        const ball = document.createElement('div');
+        const size = 50;
+        const duration = 1000; // อยู่บนจอนาน 1 วินาที (1000ms)
+
+        ball.className = 'mole-ball';
+        ball.style.width = size + 'px';
+        ball.style.height = size + 'px';
+
+        // สุ่มสี RGB
+        const hue = Math.floor(Math.random() * 360);
+        ball.style.backgroundColor = `hsl(${hue}, 80%, 60%)`;
+        ball.style.boxShadow = `0 0 20px hsl(${hue}, 80%, 60%)`;
+
+        // สุ่มตำแหน่ง (เว้นพื้นที่ขอบจอนิดหน่อย)
+        const maxX = window.innerWidth - size;
+        const maxY = window.innerHeight - size;
+        ball.style.left = Math.random() * maxX + 'px';
+        ball.style.top = Math.random() * maxY + 'px';
+
+        // ถ้าจิ้มโดน
+        ball.onclick = (e) => {
+            e.stopPropagation(); // กันรัว
+            score++;
+            scoreEl.innerText = score;
+            ball.remove();
+            clearTimeout(ballTimer);
+        };
+
+        // ถ้าเวลาหมดแล้วยังไม่ได้จิ้ม
+        const ballTimer = setTimeout(() => {
+            if (ball.parentNode) {
+                ball.style.opacity = '0';
+                setTimeout(() => {
+                    if (ball.parentNode) {
+                        ball.remove();
+                        missed++;
+                        missedEl.innerText = missed;
+                    }
+                }, 200);
+            }
+        }, duration);
+
+        document.body.appendChild(ball);
+    }
+
+    // สุ่มเกิดลูกบอลทุกๆ 0.8 วินาที
+    setInterval(spawnBall, 800);
+</script>
+
+</body>
+</html>
